@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toby's Tech Support — Your Local Tech Kid</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@300;400;600;700;800;900&family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a1a2e;
+    --gold: #f0a500;
+    --red: #ff6b6b;
+    --blue: #4a90e2;
+    --green: #50c878;
+    --light: #f7f9ff;
+    --grey: #666;
+    --border: #e5eaf8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #ffffff;
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--border);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--navy); text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 700; color: var(--grey); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--navy); }
+  .nav-cta { background: var(--gold); color: var(--navy) !important; padding: 8px 18px; border-radius: 99px; font-weight: 800 !important; box-shadow: 0 3px 0 #c48400; transition: transform 0.15s, box-shadow 0.15s !important; }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #c48400 !important; }
+
+  /* ── GAME BANNER ── */
+  .game-banner {
+    margin-top: 64px;
+    background: var(--navy);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-banner-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .game-label {
+    font-family: 'Fira Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .game-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    color: white;
+  }
+
+  .game-title span { color: var(--gold); }
+
+  #game-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  #gameCanvas {
+    display: block;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+  }
+
+  .game-hint {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 6px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .game-score-display {
+    font-family: 'Fredoka One', cursive;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+  }
+  .game-score-display span { color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 60px 5% 80px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-text { flex: 1; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: #fff0f0; border: 2px solid var(--red); color: var(--red); font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 99px; margin-bottom: 20px; }
+  .hero h1 { font-family: 'Fredoka One', cursive; font-size: clamp(42px, 6vw, 68px); line-height: 1.05; margin-bottom: 16px; }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub { font-size: 17px; color: var(--grey); line-height: 1.65; margin-bottom: 28px; font-weight: 500; max-width: 480px; }
+  .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary { background: var(--navy); color: white; font-family: 'Fredoka One', cursive; font-size: 17px; padding: 14px 28px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 0 #08081a; transition: transform 0.15s, box-shadow 0.15s; display: inline-block; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #08081a; }
+  .btn-secondary { background: var(--gold); color: var(--navy); font-family: 'Fredoka One', cursive; font-size: 17px; padding: 14px 28px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 0 #c48400; transition: transform 0.15s, box-shadow 0.15s; display: inline-block; }
+  .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #c48400; }
+
+  .hero-card { flex: 0 0 300px; background: var(--navy); border-radius: 24px; padding: 36px 28px; text-align: center; box-shadow: 0 20px 60px rgba(26,26,46,0.25); }
+  .hero-avatar { width: 90px; height: 90px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 16px; border: 3px solid rgba(255,255,255,0.2); }
+  .hero-card-name { font-family: 'Fredoka One', cursive; font-size: 26px; color: white; margin-bottom: 6px; }
+  .hero-card-age { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 600; margin-bottom: 20px; }
+  .award-pill { background: var(--gold); color: var(--navy); font-size: 12px; font-weight: 800; padding: 8px 14px; border-radius: 10px; line-height: 1.4; }
+  .guarantee-pill { margin-top: 14px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 10px; }
+
+  /* ── SECTIONS ── */
+  section { padding: 80px 5%; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-tag { font-family: 'Fira Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .section-title { font-family: 'Fredoka One', cursive; font-size: clamp(30px, 4vw, 44px); color: var(--navy); margin-bottom: 12px; line-height: 1.1; }
+  .section-sub { font-size: 16px; color: var(--grey); font-weight: 500; max-width: 560px; line-height: 1.6; margin-bottom: 48px; }
+
+  /* ── SERVICES ── */
+  .services-section { background: var(--light); }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .service-card { background: white; border-radius: 16px; padding: 24px 20px; border: 2px solid var(--border); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); border-color: var(--gold); }
+  .service-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+  .service-name { font-family: 'Fredoka One', cursive; font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .service-desc { font-size: 13px; color: var(--grey); line-height: 1.5; font-weight: 500; }
+  .service-price { margin-top: 12px; font-family: 'Fira Mono', monospace; font-size: 12px; color: var(--gold); font-weight: 700; }
+
+  /* ── TECH CLASS ── */
+  .class-section { background: var(--navy); }
+  .class-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 60px; align-items: center; }
+  .class-text { flex: 1; }
+  .class-text .section-tag { color: var(--gold); }
+  .class-text .section-title { color: white; }
+  .class-text .section-sub { color: rgba(255,255,255,0.82); margin-bottom: 28px; }
+  .class-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+  .class-feature { display: flex; align-items: flex-start; gap: 12px; }
+  .class-feature-icon { width: 36px; height: 36px; background: rgba(240,165,0,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .class-feature-text strong { display: block; color: white; font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+  .class-feature-text span { color: rgba(255,255,255,0.5); font-size: 13px; }
+  .class-card { flex: 0 0 280px; background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 32px 28px; text-align: center; }
+  .class-card-icon { font-size: 48px; margin-bottom: 16px; }
+  .class-card-title { font-family: 'Fredoka One', cursive; font-size: 24px; color: white; margin-bottom: 8px; }
+  .class-card-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 20px; }
+  .class-price-big { font-family: 'Fredoka One', cursive; font-size: 42px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
+  .class-price-note { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+
+  /* ── PRICING ── */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .pricing-card { border: 2px solid var(--border); border-radius: 20px; padding: 32px 28px; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+  .pricing-card.featured { border-color: var(--gold); background: #fffdf0; }
+  .featured-tag { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--navy); font-size: 11px; font-weight: 800; padding: 4px 16px; border-radius: 99px; white-space: nowrap; font-family: 'Fira Mono', monospace; letter-spacing: 0.1em; }
+  .pricing-icon { font-size: 32px; margin-bottom: 12px; }
+  .pricing-name { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--navy); margin-bottom: 6px; }
+  .pricing-desc { font-size: 13px; color: var(--grey); line-height: 1.5; margin-bottom: 16px; }
+  .pricing-amount { font-family: 'Fredoka One', cursive; font-size: 40px; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+  .pricing-amount span { font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--grey); font-weight: 600; }
+  .pricing-note { font-size: 12px; color: var(--grey); margin-bottom: 8px; }
+
+  .no-fix-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f0fff4;
+    border: 1.5px solid var(--green);
+    color: #1a7a3a;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+  }
+
+  .pricing-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .pricing-list li { font-size: 13px; color: var(--grey); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .pricing-list li::before { content: '✓'; color: var(--green); font-weight: 900; font-size: 14px; }
+
+  /* ── GUARANTEE ── */
+  .guarantee-section { background: #fff8f0; border-top: 3px solid var(--gold); border-bottom: 3px solid var(--gold); text-align: center; padding: 60px 5%; }
+  .guarantee-emoji { font-size: 56px; margin-bottom: 16px; }
+  .guarantee-title { font-family: 'Fredoka One', cursive; font-size: 36px; color: var(--navy); margin-bottom: 12px; }
+  .guarantee-text { font-size: 16px; color: var(--grey); max-width: 520px; margin: 0 auto; line-height: 1.65; font-weight: 500; }
+
+  /* ── CONTACT ── */
+  .contact-section { background: var(--light); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .contact-item { display: flex; align-items: center; gap: 16px; padding: 18px 20px; background: white; border-radius: 14px; border: 2px solid var(--border); margin-bottom: 14px; transition: border-color 0.2s; }
+  .contact-item:hover { border-color: var(--gold); }
+  .contact-item-icon { width: 44px; height: 44px; background: var(--light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .contact-item-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 2px; }
+  .contact-item-value { font-family: 'Fira Mono', monospace; font-size: 14px; font-weight: 700; color: var(--navy); text-decoration: none; }
+  .contact-item-value:hover { color: var(--gold); }
+  .contact-note { background: var(--navy); border-radius: 16px; padding: 28px 24px; color: white; }
+  .contact-note-title { font-family: 'Fredoka One', cursive; font-size: 20px; margin-bottom: 10px; color: var(--gold); }
+  .contact-note p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65; font-weight: 500; }
+
+  .qr-wrap {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .qr-wrap img, .qr-wrap canvas {
+    border-radius: 10px;
+    border: 3px solid rgba(255,255,255,0.15);
+    padding: 6px;
+    background: white;
+  }
+
+  .qr-label {
+    font-family: 'Fira Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ── FOOTER ── */
+  footer { background: var(--navy); padding: 28px 5%; text-align: center; border-top: 3px solid var(--gold); }
+  footer p { font-family: 'Fredoka One', cursive; font-size: 16px; color: rgba(255,255,255,0.5); }
+  footer p span { color: var(--gold); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-text { animation: fadeUp 0.6s ease both; }
+  .hero-card { animation: fadeUp 0.6s 0.15s ease both; }
+
+  @media (max-width: 768px) {
+    .hero { flex-direction: column; padding-top: 40px; gap: 40px; }
+    .hero-card { width: 100%; max-width: 320px; }
+    .class-inner { flex-direction: column; }
+    .class-card { width: 100%; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .game-banner-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Toby's <span>Tech</span> Help</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#classes">Tech Class</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact" class="nav-cta">Contact Me</a></li>
+  </ul>
+</nav>
+
+<!-- MINI GAME BANNER -->
+<div class="game-banner">
+  <div class="game-banner-inner">
+    <div>
+      <p class="game-label">🎮 Mini Game — While You're Here!</p>
+      <p class="game-title">Bug <span>Invaders!</span></p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:6px;font-weight:500;">Tap the bugs to destroy them before they reach the WiFi router! 🐛</p>
+      <p class="game-score-display" style="margin-top:10px;">Score: <span id="scoreVal">0</span> &nbsp;|&nbsp; Best: <span id="bestVal">0</span></p>
+    </div>
+    <div id="game-wrap">
+      <canvas id="gameCanvas" width="480" height="200"></canvas>
+      <p class="game-hint">Move mouse to aim · Click/hold to shoot · Space to start</p>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section style="padding:0;">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-badge">👋 Hi! I'm 12 years old</div>
+      <h1>Your Local <span>Tech</span> Problem Solver</h1>
+      <p class="hero-sub">Hi, I'm Toby! I come to your house, fix your tech problems, and only charge you if I actually sort it out. Simple as that.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn-primary">📞 Get in Touch</a>
+        <a href="#services" class="btn-secondary">See What I Fix</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-avatar">🧑‍💻</div>
+      <p class="hero-card-name">Toby Kamani</p>
+      <p class="hero-card-age">12 years old · Based in New Zealand</p>
+      <div class="award-pill">🏆 #1 in NZ — ICAS Digital Technologies</div>
+      <div class="guarantee-pill">🤝 No fix? No fee. Guaranteed.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-inner">
+    <p class="section-tag">// What I can fix</p>
+    <h2 class="section-title">Tech Problems I Solve</h2>
+    <p class="section-sub">From WiFi dropouts to slow computers — if it's a tech problem around the house, chances are I can sort it.</p>
+    <div class="services-grid">
+      <div class="service-card"><span class="service-icon">📡</span><p class="service-name">WiFi & Internet Issues</p><p class="service-desc">Slow speeds, dropouts, dead zones, router setup and password resets.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🖥️</span><p class="service-name">PC Not Working</p><p class="service-desc">Full diagnosis, part recommendations and installation to get it running again.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🐢</span><p class="service-name">Slow Computer Tune-Up</p><p class="service-desc">Clear junk files, run updates, disable startup apps — feel the difference.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🦷</span><p class="service-name">Bluetooth Not Working</p><p class="service-desc">Headphones, speakers, keyboards, mice — pairing problems sorted.</p><p class="service-price">From ~$25 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🖨️</span><p class="service-name">Printer Problems</p><p class="service-desc">Ink cartridge changes, setup, not printing, offline errors and paper jams.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">📱</span><p class="service-name">Device Setup</p><p class="service-desc">New phone, tablet or laptop — set up, apps installed, ready to use.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🔐</span><p class="service-name">Virus & Security Issues</p><p class="service-desc">Slow after a dodgy download? I'll scan, clean and secure your device.</p><p class="service-price">From ~$30 NZD</p></div>
+      
+      <div class="service-card"><span class="service-icon">📺</span><p class="service-name">Smart TV & Streaming</p><p class="service-desc">Netflix not loading, TV not connecting to WiFi, remote issues — all sorted.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🔌</span><p class="service-name">Cable & Connection Chaos</p><p class="service-desc">Messy cables, wrong ports, monitors not displaying — I'll tidy it all up.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">☁️</span><p class="service-name">Cloud & Email Setup</p><p class="service-desc">Google Drive, iCloud, OneDrive, email accounts — set up and working properly.</p><p class="service-price">From ~$30 NZD</p></div>
+      <div class="service-card"><span class="service-icon">🎮</span><p class="service-name">Gaming Setup Help</p><p class="service-desc">Console or PC gaming — network issues, controller setup, lag problems fixed.</p><p class="service-price">From ~$30 NZD</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH CLASS -->
+<section class="class-section" id="classes">
+  <div class="class-inner">
+    <div class="class-text">
+      <p class="section-tag">// Classes</p>
+      <h2 class="section-title">Tech Basics Class</h2>
+      <p class="section-sub">Feeling lost with technology? Book a friendly one-on-one session and I'll walk you through the basics — no jargon, no judgment, just clear and simple help.</p>
+      <div class="class-features">
+        <div class="class-feature">
+          <div class="class-feature-icon">🏠</div>
+          <div class="class-feature-text">
+            <strong>I come to you</strong>
+            <span>No need to go anywhere — I visit your home at a time that suits</span>
+          </div>
+        </div>
+        <div class="class-feature">
+          <div class="class-feature-icon">🎯</div>
+          <div class="class-feature-text">
+            <strong>You choose the topic</strong>
+            <span>We cover whatever YOU want to learn — at your own pace</span>
+          </div>
+        </div>
+        <div class="class-feature">
+          <div class="class-feature-icon">🗣️</div>
+          <div class="class-feature-text">
+            <strong>Plain English only</strong>
+            <span>No confusing tech words — I explain everything simply</span>
+          </div>
+        </div>
+        <div class="class-feature">
+          <div class="class-feature-icon">👴</div>
+          <div class="class-feature-text">
+            <strong>Perfect for all ages</strong>
+            <span>Especially great for older folks who want a patient, friendly teacher</span>
+          </div>
+        </div>
+      </div>
+      <a href="#contact" class="btn-secondary">Book a Session</a>
+    </div>
+    <div class="class-card">
+      <div class="class-card-icon">📚</div>
+      <p class="class-card-title">What We Can Cover</p>
+      <p class="class-card-desc">Using your smartphone · Email basics · Video calls (Zoom / FaceTime) · Safe browsing · Social media · Online banking safety · Using Google · Managing your photos · Setting up apps</p>
+      <p class="class-price-big">~$25</p>
+      <p class="class-price-note">NZD · One-off session · About 1 hour</p>
+      <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;font-size:15px;padding:12px;display:block;">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner">
+    <p class="section-tag">// Pricing</p>
+    <h2 class="section-title">Simple, Fair Pricing</h2>
+    <p class="section-sub">No surprises. No hidden fees. And if I can't fix it — you pay nothing at all.</p>
+    <div class="pricing-grid">
+
+      <div class="pricing-card">
+        <div class="pricing-icon">🔧</div>
+        <p class="pricing-name">Quick Fix</p>
+        <p class="pricing-desc">Simple issues sorted fast — usually under an hour.</p>
+        <p class="pricing-amount">~$30 <span>NZD</span></p>
+        <p class="pricing-note">Could be less for very simple jobs</p>
+        <div class="no-fix-badge">🤝 No fix = No fee</div>
+        <ul class="pricing-list">
+          <li>WiFi resets & password help</li>
+          <li>Bluetooth pairing</li>
+          <li>Ink cartridge changes</li>
+          <li>Basic device setup</li>
+        </ul>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-icon">🖥️</div>
+        <p class="pricing-name">Full Fix</p>
+        <p class="pricing-desc">Bigger jobs that need proper diagnosis and hands-on work.</p>
+        <p class="pricing-amount">$30–$50 <span>NZD</span></p>
+        <p class="pricing-note">Capped at $50 — no nasty surprises</p>
+        <div class="no-fix-badge">🤝 No fix = No fee</div>
+        <ul class="pricing-list">
+          <li>PC diagnosis & repair</li>
+          <li>Virus removal & security</li>
+          <li>Parts installation</li>
+          <li>Full computer tune-up</li>
+        </ul>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-icon">📚</div>
+        <p class="pricing-name">Tech Basics Class</p>
+        <p class="pricing-desc">One-on-one session teaching you the basics of tech at home.</p>
+        <p class="pricing-amount">~$25 <span>NZD</span></p>
+        <p class="pricing-note">One-off session · About 1 hour</p>
+        <div class="no-fix-badge">✅ You'll always learn something!</div>
+        <ul class="pricing-list">
+          <li>One-on-one teaching</li>
+          <li>You choose the topic</li>
+          <li>Patient & friendly</li>
+          <li>I come to your home</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<div class="guarantee-section">
+  <div class="guarantee-emoji">🤝</div>
+  <h2 class="guarantee-title">No Fix? Absolutely No Fee.</h2>
+  <p class="guarantee-text">If I come to your place and can't solve the problem, you pay nothing. Zero. I only charge when I actually fix the issue — because that's just the right thing to do.</p>
+</div>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="section-inner">
+    <p class="section-tag">// Get in touch</p>
+    <h2 class="section-title">Contact Me</h2>
+    <p class="section-sub">Text, call or email me. I'll get back to you as soon as I can! The phone number goes through to my mum, so feel free to call and have a chat with her first if you'd like.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-item-icon">📞</div>
+          <div>
+            <p class="contact-item-label">Call or Text</p>
+            <a href="tel:0211462673" class="contact-item-value">021 146 2673</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div>
+            <p class="contact-item-label">Email</p>
+            <a href="mailto:tobystechsupport@gmail.com" class="contact-item-value">tobystechsupport@gmail.com</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">📍</div>
+          <div>
+            <p class="contact-item-label">Location</p>
+            <p class="contact-item-value" style="text-decoration:none;">New Zealand</p>
+          </div>
+        </div>
+      </div>
+      <div class="contact-note">
+        <p class="contact-note-title">A note from Toby 👋</p>
+        <p>Hey! I'm 12 and I genuinely love technology. I ranked #1 in all of New Zealand for ICAS Digital Technologies, so you can trust that I actually know my stuff.<br><br>I'm friendly, patient, and I'll explain everything in plain English — no confusing tech talk. And remember, if I can't fix it, you don't pay a cent.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Made with ❤️ by <span>Toby Kamani</span> · Your Local Tech Kid · New Zealand</p>
+</footer>
+
+<script src="game.js"></script>
+</body>
+</html>
